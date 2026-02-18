@@ -20,7 +20,7 @@
 
 ** This project is an implementation of a repeatable, end-to-end AWS batch data pipeline that simulates recurring large-scale ingestion into a cloud data warehouse.
 
-** The source data (financial transactions) is dynamically generated using Python (Faker library), stored in Amazon S3 in Parquet format, and loaded into Amazon Redshift Serverless for analytics via two orchestrated Airflow DAGs.
+** The source data (financial transactions) was dynamically generated using Python (Faker library), stored in Amazon S3 in Parquet format, and loaded into Amazon Redshift Serverless for analytics via two orchestrated Airflow DAGs.
 
 ** All infrastructure is provisioned using Terraform, and workflow orchestration is handled by Apache Airflow running locally in Docker.
 
@@ -28,7 +28,7 @@
 
 ## Infrastructure / Architecture
 
-All AWS resources are provisioned using Terraform (Infrastructure as Code), which includes but not limited to:
+All AWS resources were provisioned using Terraform (Infrastructure as Code), which includes but not limited to:
 - Custom VPC  
 - Subnets  
 - Security groups  
