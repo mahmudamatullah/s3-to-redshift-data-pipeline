@@ -1,4 +1,4 @@
-## Table of Contents
+# Table of Contents
 
 - [Project Overview](#overview)
 - [Infrastructure / Architecture](#infrastructure--architecture)
@@ -10,12 +10,12 @@
 - [What I Learned](#what-i-learned)
 - [Next Projects](#next-projects)
 
-# Project Overview
-* This project is an implementation of an end-to-end AWS-based data pipeline. The data (financial transactions) was generated using Python(Faker library), stored in S3, and then loaded into Amazon Redshift Serverless.
-* All cloud infrastructure is provisioned using Terraform, and workflow orchestration is handled using Apache Airflow running locally in Docker.
-* The project demonstrates infrastructure automation, secure service-to-service communication, and orchestrated data loading into a cloud data warehouse.
+## Project Overview
+- This project is an implementation of an end-to-end AWS-based data pipeline. The data (financial transactions) was generated using Python(Faker library), stored in S3, and then loaded into Amazon Redshift Serverless.
+- All cloud infrastructure is provisioned using Terraform, and workflow orchestration is handled using Apache Airflow running locally in Docker.
+- The project demonstrates infrastructure automation, secure service-to-service communication, and orchestrated data loading into a cloud data warehouse.
   
-# Infrastructure / Architecture
+## Infrastructure / Architecture
 * All AWS resources are provisioned using Terraform (Infrastructure as Code), this includes but not limited to:
 * Custom VPC
 * Subnets
