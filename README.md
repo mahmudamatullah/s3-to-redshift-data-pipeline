@@ -38,7 +38,7 @@ All AWS resources were provisioned using Terraform (Infrastructure as Code), whi
 - Airflow is containerized using Docker and runs locally to orchestrate the pipeline.
 
 ## Data Generation
-Transaction data is generated using Python and the Faker library.
+Transaction data was generated using Python and the Faker library.
 _Key characteristics:_
  - Each pipeline run generates 500,000 to 1,000,000 records that varies per execution.
  - Files are timestamped using the current execution date.
@@ -52,17 +52,16 @@ _Key characteristics:_
 3. **DAG 2 – S3 → Redshift Load:**  
    - Loads the Parquet files into Redshift
    - Appends new records to the existing warehouse records  
-4. Data becomes available for analytics  
+4. Data is now available for analytics  
 
 ## Tech Stack
-Python
-Faker
-AWS Wrangler
-Terraform
-AWS S3, IAM
-Amazon Redshift Serverless
-Apache Airflow
-Docker
+Python (Faker), 
+AWS Wrangler,
+Terraform,
+AWS S3, IAM,
+Amazon Redshift Serverless,
+Apache Airflow,
+Docker.
 
 
 ## How to Run
@@ -84,17 +83,16 @@ Docker
 - Secure IAM role-based service communication
 - Dynamic large-batch data generation (500k–1M records per run)
 - Parquet-based storage for optimized warehouse loading
-- Append-only loading strategy
+- Append-only loading
 - Containerized Airflow orchestration
 
 ## Future Improvements
-- Deploy Airflow to a managed cloud service (e.g., MWAA)
-- Introduce CI/CD for infrastructure deployment
+- CI/CD for infrastructure deployment
 - Provisining Airfow in an Ec2
 
-## What I Learned
+## What I Learnt
 - Designing secure AWS networking and IAM configurations
 - Understanding Infrastructure
 - Building modular, and dynamic batch ingestion pipelines
-- Orchestrating workflows with Airflow
+- Orchestrating multiple workflows with Airflow
 - Generating synthetic datasets with Faker
