@@ -38,30 +38,6 @@ All AWS resources were provisioned using Terraform (Infrastructure as Code), whi
 - IAM roles and policies for secure S3 → Redshift access
 - Airflow is containerized using Docker and runs locally to orchestrate the pipeline.
 
-### Architecture Diagram
-
-graph TD
-    %% Local Environment
-    subgraph "Local Environment (Docker)"
-        A[Airflow Scheduler]:::scheduler --> B[Data Generation Task (DAG 1)]:::task
-        B --> C[Load to Redshift Task (DAG 2)]:::task
-    end
-
-    %% AWS Cloud
-    subgraph "AWS Cloud (Provisioned via Terraform)"
-        C -- "Uploads Parquet" --> D[Amazon S3]:::s3
-        D -- "COPY Command" --> E[Amazon Redshift Serverless]:::redshift
-        F[IAM Roles] -.->|Permissions| D
-        F -.->|Permissions| E
-        G[VPC / Security Groups] -.->|Network| E
-    end
-
-    %% Styles
-    classDef scheduler fill:#6c6,stroke:#333,stroke-width:2px
-    classDef task fill:#ccf,stroke:#333,stroke-width:2px
-    classDef s3 fill:#f96,stroke:#333,stroke-width:2px
-    classDef redshift fill:#69f,stroke:#333,stroke-width:2px
-
 ## Data Generation
 Transaction data was generated using Python and the Faker library.
 _Key characteristics:_
