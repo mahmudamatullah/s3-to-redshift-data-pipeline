@@ -1,12 +1,14 @@
 # S3 to Redshift Batch Data Pipeline
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=flat&logo=terraform&logoColor=white)
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Infrastructure / Architecture](#infrastructure--architecture)
 - [Data Generation](#data-generation)
-- [Data Pipeline Flow](#data-flow)
-- [Airflow Orchestration](#airflow-orchestration)
+- [Data Pipeline Flow](#data-pipeline-flow)
 - [Tech Stack](#tech-stack)
 - [How to Run](#how-to-run)
 - [Key Features](#key-features)
@@ -27,7 +29,6 @@
 --- 
 
 ## Infrastructure / Architecture
-
 All AWS resources were provisioned using Terraform (Infrastructure as Code), which includes but not limited to:
 - Custom VPC  
 - Subnets  
@@ -37,12 +38,36 @@ All AWS resources were provisioned using Terraform (Infrastructure as Code), whi
 - IAM roles and policies for secure S3 → Redshift access
 - Airflow is containerized using Docker and runs locally to orchestrate the pipeline.
 
+### Architecture Diagram
+
+graph TD
+    %% Local Environment
+    subgraph "Local Environment (Docker)"
+        A[Airflow Scheduler]:::scheduler --> B[Data Generation Task (DAG 1)]:::task
+        B --> C[Load to Redshift Task (DAG 2)]:::task
+    end
+
+    %% AWS Cloud
+    subgraph "AWS Cloud (Provisioned via Terraform)"
+        C -- "Uploads Parquet" --> D[Amazon S3]:::s3
+        D -- "COPY Command" --> E[Amazon Redshift Serverless]:::redshift
+        F[IAM Roles] -.->|Permissions| D
+        F -.->|Permissions| E
+        G[VPC / Security Groups] -.->|Network| E
+    end
+
+    %% Styles
+    classDef scheduler fill:#6c6,stroke:#333,stroke-width:2px
+    classDef task fill:#ccf,stroke:#333,stroke-width:2px
+    classDef s3 fill:#f96,stroke:#333,stroke-width:2px
+    classDef redshift fill:#69f,stroke:#333,stroke-width:2px
+
 ## Data Generation
 Transaction data was generated using Python and the Faker library.
 _Key characteristics:_
  - Each pipeline run generates 500,000 to 1,000,000 records that varies per execution.
  - Files are timestamped using the current execution date.
-> The reason is to stimulate controlled, repeatable testing without relying on external datasets.
+> The reason was to simulate controlled and repeatable testing without relying on external datasets.
 
 ## Data Pipeline Flow
 1. Terraform provisions AWS infrastructure.  
@@ -55,26 +80,64 @@ _Key characteristics:_
 4. Data is now available for analytics  
 
 ## Tech Stack
-Python (Faker), 
-AWS Wrangler,
-Terraform,
-AWS S3, IAM,
-Amazon Redshift Serverless,
-Apache Airflow,
-Docker.
+- Python (Faker)
+- AWS Wrangler
+- Terraform
+- AWS S3, IAM
+- Amazon Redshift Serverless
+- Apache Airflow
+- Docker
 
 
 ## How to Run
-1. Provision Infrastructure
-   `terraform init`
-   `terraform apply`
-   
-2. Start Airflow (Docker)
-   `docker-compose up`
 
-3. Access Airflow UI at:
-    `http://localhost:8080`
-- To trigger DAG: Trigger the pipeline DAG from the Airflow UI to generate data and load it into Redshift.
+### 1. Prerequisites
+Before running the pipeline, you need to have:
+
+- An AWS account with access
+- Terraform installed locally
+- Docker installed
+- Apache Airflow installed via Docker, or the script can be copied if it's on the cloud.
+- Optional: Python (for local scripts/tests)
+
+---
+
+### 2. Provision AWS Infrastructure
+``bash
+terraform init
+terraform apply``
+
+> Terraform will create the necessary resources mentioned in the Architecture/ Infrastructure
+> Note: Replace any placeholder variables in Terraform with your own AWS credentials and preferred naming.
+
+### 3. Start Airflow (Docker)
+`docker-compose up` - This will launch the Airflow webserver and scheduler locally.
+
+Access the Airflow UI at:
+`http://localhost:8080`
+
+4. Configure Airflow Connections
+
+The DAG references two connections:
+
+| Connection ID   | Type                  | Description                                                      |
+|-----------------|----------------------|------------------------------------------------------------------|
+| amatullah       | Amazon Web Services   | Link to your AWS account (provide Access Key & Secret)           |
+| my_redshift     | Amazon Redshift       | Link to your Redshift Serverless instance (host, database, user, password, port) |
+
+Tip: Use Airflow UI → Admin → Connections to add these.
+You can use placeholder values to test or your own credentials.
+
+5. Trigger the DAG
+- Locate the DAG moving_data_to_s3 in the Airflow UI.
+- Turn it on and click Trigger DAG.
+- DAG 1 will generate the transaction data and upload it to S3.
+- DAG 2 will load the data into Redshift (append-only).
+- Each run generates 500k–1M records and stores them in date-stamped Parquet files.
+
+7. Notes
+This project is intended to be run with your own AWS account.
+The pipeline is modular, which means the DAGs can be executed independently for testing or full ingestion.
 
 
 ## Key Features
