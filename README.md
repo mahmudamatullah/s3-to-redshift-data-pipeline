@@ -14,7 +14,7 @@
 - [How to Run](#how-to-run)
 - [Key Features](#key-features)
 - [Future Improvements](#future-improvements)
-- [What I Learned](#what-i-learned)
+- [What I Learnt](#what-i-learnt)
 - [Next Projects](#next-projects)
 
 ---
